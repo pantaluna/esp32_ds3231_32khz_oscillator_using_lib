@@ -48,10 +48,8 @@ The black/yellow RTC board cannot be used because the 32K output pin of the DS32
 
 ### Hardware
 
-- A decent ESP development board. I suggest to buy a popular development board with good technical documentation and a significant user base. Examples: [Adafruit HUZZAH32](https://www.adafruit.com/product/3405),  [Espressif ESP32-DevKitC](http://espressif.com/en/products/hardware/esp32-devkitc/overview), [Pycom WiPy](https://pycom.io/hardware/), [Wemos D32](https://wiki.wemos.cc/products:d32:d32).
-- The peripherals that are used in the project.
-  @tip The README of each component contains a section "Shop Products".
-  @example A Bosch BME280 meteo sensor breakout board.
+- A decent ESP development board. I suggest to buy a popular development board with good technical documentation and a significant user base. Examples: [LOLIN D32](https://wiki.wemos.cc/products:d32:d32),  [Adafruit HUZZAH32](https://www.adafruit.com/product/3405),  [Espressif ESP32-DevKitC](http://espressif.com/en/products/hardware/esp32-devkitc/overview), [Pycom](https://pycom.io/hardware/).
+- The peripherals that are used in the project. The README.md of each component contains a section "Shop Products".
 
 
 

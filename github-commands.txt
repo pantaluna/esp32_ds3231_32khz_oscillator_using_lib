@@ -23,7 +23,7 @@ git push --set-upstream origin master
 
 git remote show origin
 
-git tag --annotate v1.0 --message "Using ESP32 in combination with a DS3131MZ+ as external 32Khz crystla oscillator (accurate timekeeping in deep sleep)"
+git tag --annotate v1.0 --message "Using ESP32 in combination with a DS3131MZ+ as external 32Khz crystal oscillator (accurate timekeeping in deep sleep)"
 git push origin --tags
 
 git describe --tags --dirt
@@ -43,7 +43,7 @@ git commit -m "Updated"
 git config credential.helper store
 git push --set-upstream origin master
 
-git tag --annotate v1.1 --message "..."
+git tag --annotate v1.1 --message "Update documentation"
 git push origin --tags
 
 git describe --tags --dirt
