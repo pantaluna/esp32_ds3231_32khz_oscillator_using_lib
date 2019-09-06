@@ -34,6 +34,7 @@ extern "C" {
 
 // DS3231 Values
 #define MJD_DS3231_MAXVAL_YEAR    (2099)
+#define MJD_DS3231_MAXVAL_MKTIME_YEAR    (2037)
 #define MJD_DS3231_MAXVAL_MONTH   (12)
 #define MJD_DS3231_MAXVAL_DAY     (31)
 #define MJD_DS3231_MAXVAL_HOURS   (23)
@@ -56,7 +57,7 @@ typedef struct {
     .manage_i2c_driver = true,  \
     .i2c_port_num = I2C_NUM_0,  \
     .i2c_slave_addr = MJD_DS3231_I2C_ADDR  \
-};
+}
 
 /*
  * @brief mjd_ds3231_data_t
@@ -70,7 +71,7 @@ typedef struct {
  *
  */
 typedef struct {
-        uint32_t year;    // u8 0000-9999
+        uint32_t year;   // u8 0000-9999
         uint8_t month;   // BCD 01–12 + Century
         uint8_t day;     // 01–31
         uint8_t hours;   // BCD 00–23PM
@@ -82,13 +83,18 @@ typedef struct {
         float temperature_celsius;
 } mjd_ds3231_data_t;
 
+#define MJD_DS3231_DATA_DEFAULT() {0}
+
 /**
  * Function declarations
  */
-esp_err_t mjd_ds3231_init(const mjd_ds3231_config_t* config);
-esp_err_t mjd_ds3231_deinit(const mjd_ds3231_config_t* config);
-esp_err_t mjd_ds3231_get_data(const mjd_ds3231_config_t* config, mjd_ds3231_data_t* data);
-esp_err_t mjd_ds3231_set_datetime(const mjd_ds3231_config_t* config, const mjd_ds3231_data_t* data);
+esp_err_t mjd_ds3231_init(const mjd_ds3231_config_t* param_ptr_config);
+esp_err_t mjd_ds3231_deinit(const mjd_ds3231_config_t* param_ptr_config);
+esp_err_t mjd_ds3231_log_data(const mjd_ds3231_data_t param_data);
+esp_err_t mjd_ds3231_get_data(const mjd_ds3231_config_t* param_ptr_config, mjd_ds3231_data_t* param_ptr_data);
+esp_err_t mjd_ds3231_set_datetime(const mjd_ds3231_config_t* param_ptr_config, mjd_ds3231_data_t param_data);
+esp_err_t mjd_ds3231_apply_rtc_time_to_mcu(const mjd_ds3231_config_t* param_ptr_config);
+esp_err_t mjd_ds3231_save_mcu_time_to_rtc(const mjd_ds3231_config_t* param_ptr_config);
 
 #ifdef __cplusplus
 }

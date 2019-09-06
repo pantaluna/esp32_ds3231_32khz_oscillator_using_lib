@@ -152,7 +152,11 @@ void main_task(void *pvParameter) {
     /********************************************************************************
      * MAIN
      */
-    ESP_LOGI(TAG, "***SECTION: MAIN: null...***");
+    ESP_LOGI(TAG, "***SECTION: MAIN: bootcount > 1***");
+
+
+
+
 
     /********************************************************************************
      * DEEP SLEEP & RESTART TIMER

@@ -22,6 +22,15 @@ CONFIG_STACK_CHECK_ALL=y
 CONFIG_STACK_CHECK=y
 
 #
+# Component => ESP-32 Specific => Minimum Supported ESP32 revision := 1
+#   (default=0)
+CONFIG_ESP32_REV_MIN_0=
+CONFIG_ESP32_REV_MIN_1=y
+CONFIG_ESP32_REV_MIN_2=
+CONFIG_ESP32_REV_MIN_3=
+CONFIG_ESP32_REV_MIN=1
+
+#
 ##
 # OPTIONAL Component => ESP-32 Specific => UART... ***TX RX ports are specific for Adafruit HUZZAH32
 #   @doc https://esp-idf.readthedocs.io/en/latest/api-reference/kconfig.html#envvar-CONFIG_CONSOLE_UART

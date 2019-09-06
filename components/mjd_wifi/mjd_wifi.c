@@ -260,9 +260,9 @@ esp_err_t mjd_wifi_sta_start() {
         goto cleanup;
     }
 
-    uxBits = xEventGroupWaitBits(_wifi_event_group, WIFI_CONNECTED_BIT, pdFALSE, pdTRUE, RTOS_DELAY_6SEC); // (1-3sec=AUTH_FAIL!) RTOS_DELAY_1SEC RTOS_DELAY_6SEC
+    uxBits = xEventGroupWaitBits(_wifi_event_group, WIFI_CONNECTED_BIT, pdFALSE, pdTRUE, RTOS_DELAY_6SEC); // (0-3sec=AUTH_FAIL!)
     if ((uxBits & WIFI_CONNECTED_BIT) == 0) {
-        ESP_LOGW(TAG, "FIRST TIME esp_wifi_start() failed to connect. Wait 5 seconds and try a 2nd time...");
+        ESP_LOGW(TAG, "FIRST TIME esp_wifi_start() failed to connect after *6* seconds. Wait *5* seconds and try a 2nd time...");
 
         ++_total_nbr_of_first_connect_warnings;
 
@@ -273,7 +273,7 @@ esp_err_t mjd_wifi_sta_start() {
             goto cleanup;
         }
 
-        vTaskDelay(RTOS_DELAY_5SEC); // @important delay 5 seconds
+        vTaskDelay(RTOS_DELAY_5SEC); // @important
 
         f_retval = esp_wifi_start();
         if (f_retval != ESP_OK) {
@@ -282,7 +282,7 @@ esp_err_t mjd_wifi_sta_start() {
             goto cleanup;
         }
 
-        uxBits = xEventGroupWaitBits(_wifi_event_group, WIFI_CONNECTED_BIT, pdFALSE, pdTRUE, RTOS_DELAY_5SEC); // (1-3sec=AUTH_FAIL!) RTOS_DELAY_5SEC RTOS_DELAY_10SEC
+        uxBits = xEventGroupWaitBits(_wifi_event_group, WIFI_CONNECTED_BIT, pdFALSE, pdTRUE, RTOS_DELAY_5SEC); // (0-3sec=AUTH_FAIL!)
         if ((uxBits & WIFI_CONNECTED_BIT) == 0) {
             ++_total_nbr_of_fatal_connect_errors;
 

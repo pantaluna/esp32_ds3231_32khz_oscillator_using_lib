@@ -1,7 +1,7 @@
 ## Project Description
-This project demonstrates the hardware and software setup to use a DS3231 as an external 32KHz external oscillator for the ESP32 (and get accurate timings in deep sleep).
+This project demonstrates the hardware and software setup to use a DS3231 as an external 32KHz external crystal oscillator for the ESP32 (and get accurate timings in deep sleep).
 
-=> The app gets the current datetime via SNTP once (Wifi on) and then goes into an endless cycle of power-on for a few seconds + deep sleep for a while. Let the app run for a day and check afterwards in the debug log how accurate the datetime is. If an external  oscillator would not have been used then the current datetime would have drifted quite a lot (as documented in the ESP32 data sheets).
+=> The app gets once the current datetime via SNTP (Wifi on) and then goes into an endless cycle of power-on for a few seconds + deep sleep for a while. Let the app run for a day and then verify in the debug log how accurate the datetime still is. If an external crystal oscillator would not have been used then the current datetime would have drifted quite a lot (as documented in the ESP32 data sheets).
 
 
 
@@ -21,24 +21,26 @@ Use this project as well to get insights about the ESP-IDF component "mjd_ds3231
 
 The ESP32's internal 150Hz crystal oscillator is not very accurate  (as documented in the ESP32 data sheets) for e.g. data loggers which wake up from deep sleep at regular intervals.
 
-The ESP32 datetime deviates typically **+23 seconds per every hour** from the real-world datetime.
+The ESP32 datetime typically deviates **+23 seconds per hour** from the real-world datetime.
 
 
 
-Luckily the ESP32 also supports a more accurate RTC external 32kHz oscillator and the Maxim DS3231 provides that functionality.
+Luckily the ESP32 also supports an accurate 32kHz external oscillator and the Maxim DS3231 can provide that functionality.
 
-The ESP32 hardware design guidelines (as documented in **KConfig ESP32_RTC_CLOCK_SOURCE**) state that:
+The **ESP32 hardware design guidelines** (as documented in **KConfig ESP32_RTC_CLOCK_SOURCE**) state that:
 
-- The external clock signal must be connected to the ESP32's 32K_XP pin. The amplitude should be < 1.0V in case of a square wave signal. The common mode voltage should be 0.1 < Vcm < 0.5Vamp, where Vamp is the signal amplitude (I have not yet figured out what the last sentence means).
-- A 1 - 10 nF capacitor must be wired between the ESP32's 32K_XN pin and GND.
+- The external clock signal must be connected to the ESP32's **32K_XP pin**. 
+  **The amplitude should be < 1.0V** in case of a square wave signal. 
+  **The common mode voltage should be 0.1 < Vcm < 0.5Vamp**, where Vamp is the signal amplitude (I have not yet figured out what the last sentence means).
+- A 1 - 10 nF capacitor must be wired between the ESP32's **32K_XN pin** and GND.
 
 
 
-**The 32K pin of the DS3231 RTC board** is the square wave output signal of the 32K oscillator. It is **open-drain** so you need to wire up **a  pullup resistor** to read this signal correctly from a microcontroller pin. Pullup values between 1K and 10M are typical; i choose 100K.
+**The 32K pin of the DS3231 RTC board** is the square wave output signal of the 32K oscillator. It is **open-drain** (https://embeddedartistry.com/blog/2018/6/4/demystifying-microcontroller-gpio-settings#open-drain-output) so you need to wire up **a  pullup resistor** to read this signal correctly from a microcontroller pin. Pullup values between 1K and 10M are typical.
 
-The ESP32 requires specific voltages for the square wave signal (see above) so the pullup resistor cannot be wired to the 3.3V rail of the ESP32. The pullup must be wired to for example a 0.8V power rail which can be made from VCC 3.3V using a voltage divider with Rtop=680K and Rbottom=220K.
+The ESP32 requires specific voltages for the square wave signal (see above). The pullup resistor cannot be wired directly to the 3.3V rail of the ESP32. The pullup must be wired to for example a 0.8V power rail which can be made from VCC 3.3V using a voltage divider with Rtop=680K and Rbottom=220K.
 
-The wiring setup to use the DS3231 as a RTC Real Time Clock via the I2C protocol, as described in the main document for each RTC board, is not required. The DS3231 pins SCL and SDA are not used in this scenario.
+The wiring setup to use the DS3231 as a RTC Real Time Clock via the I2C protocol, as described in the main document for each RTC board, is not required. The DS3231 pins SCL and SDA are not used in this scenario. A backup battery is also not required in this scenario.
 
 The black/yellow RTC board cannot be used because the 32K output pin of the DS3231 chip is not exposed on that breakout board.
 
@@ -76,12 +78,15 @@ Check out the images.
 ```
 - RTC board pin VCC => ESP32 pin VCC 3.3V
 - RTC board pin GND => ESP32 pin GND
+- RTC board pin VCC => 100nF ceramic capacitor => RTC board pin GND
 
-- ESP32 pin GPIO#32 (pin 32K_XP) => 100K pullup resistor => a custom power rail (> 0.5V; < 1.0V)
 - ESP32 pin GPIO#32 (pin 32K_XP) => RTC board pin 32K
+- ESP32 pin GPIO#32 (pin 32K_XP) => 100K pullup resistor => custom 0.8V power rail(<1.0V)
 - ESP32 pin GPIO#33 (pin 32K_XN) => 1nF ceramic capacitor => GND
 
-- Voltage divider circuit of 0.8V: InputVCC=3.3V, Rtop=680K, Rbottom=220K, GND.
+- Voltage divider circuit for 0.8V power rail: InputVCC=3.3V, Rtop=680K, Rbottom=220K, GND.
+
+
 ```
 
 https://learn.adafruit.com/adafruit-ds3231-precision-rtc-breakout
@@ -130,9 +135,9 @@ Procedure:
 
 ## Test Results
 
-The ESP32 datetime does not deviate from the real-world datetime when the external 32Khz crystal oscillator is wired up and configured :)
+The ESP32 datetime does **not deviate significantly** from the real-world datetime when t**he external 32Khz crystal oscillator is wired up** and configured :)
 
-The ESP32 datetime deviates typically **+23 seconds per every hour** from the real-world datetime when the external 32Khz crystal oscillator is not used.
+The ESP32 datetime deviates typically **+23 seconds per every hour** from the real-world datetime when the external 32Khz **crystal oscillator is not used**.
 
 
 

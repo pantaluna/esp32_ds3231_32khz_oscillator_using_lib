@@ -365,7 +365,7 @@ esp_err_t mjd_net_udp_send_buffer(const char *param_hostname, int param_port, ui
     char str_ip_address[128];
     esp_retval = mjd_net_resolve_hostname_ipv4(param_hostname, str_ip_address);
     if (esp_retval != ESP_OK) {
-        ESP_LOGE(TAG, "Error mjd_net_resolve_hostname_ipv4(): errno %i (%s)", esp_retval, esp_err_to_name(esp_retval));
+        ESP_LOGE(TAG, "Error mjd_net_resolve_hostname_ipv4() | err %i (%s)", esp_retval, esp_err_to_name(esp_retval));
         f_retval = ESP_FAIL;
         // GOTO (NOT cleanup_sock!)
         goto cleanup;
@@ -387,7 +387,8 @@ esp_err_t mjd_net_udp_send_buffer(const char *param_hostname, int param_port, ui
     }
     destAddr.sin_family = AF_INET;
     /* htons() converts the unsigned short integer u16_t X from host byte order to network byte order.
-     *         No error returned. */
+     *         No error returned.
+     */
     destAddr.sin_port = htons(param_port);
 
     ESP_LOGD(TAG, "Creating socket");
@@ -410,18 +411,15 @@ esp_err_t mjd_net_udp_send_buffer(const char *param_hostname, int param_port, ui
 
     /*
      * CLEANUP
+     *
+     * @doc socket shutdown() is not relevant for UDP (only for TCP).
+     *          The func also returns an error in this case: #define EOPNOTSUPP 95 // Operation not supported on socket.
+     *          https://stackoverflow.com/questions/47324358/how-to-shutdown-udp-socket-in-python
+     *
      */
     cleanup_sock: ;
 
     if (sock != -1) {
-        ESP_LOGD(TAG, "Shutting down socket...");
-        net_retval = shutdown(sock, 0);
-        if (net_retval < 0) {
-            ESP_LOGE(TAG, "Error shutdown(): errno %i (%s)", errno, strerror(errno));
-            f_retval = ESP_FAIL;
-            // GOTO (NOT cleanup_sock!)
-            goto cleanup;
-        }
         ESP_LOGD(TAG, "Closing socket...");
         net_retval = close(sock);
         if (net_retval < 0) {

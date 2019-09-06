@@ -97,14 +97,27 @@ int mjd_compare_ints(const void * a, const void * b);
 
 /**********
  * BYTES/WORDS and BINARY REPRESENTATION
+ *
+ * @doc Packed BCD = 4 bits per digit. This encodes two decimal digits within a single byte by taking advantage of the fact that four bits are enough to represent the range 0 to 9.
+ * @doc https://en.wikipedia.org/wiki/Binary-coded_decimal
+ *
  */
 #define MJD_HIBYTE(x) ((uint8_t)((uint16_t)(x) >> 8))
 #define MJD_LOBYTE(x) ((uint8_t)(x))
 #define MJD_HIWORD(x) ((uint16_t)((uint32_t)(x) >> 16))
 #define MJD_LOWORD(x) ((uint16_t)((uint32_t)(x)))
 
+/*
+ * Convert uint8_t to binary coded decimal
+ */
 uint8_t mjd_byte_to_bcd(uint8_t val);
+
+/*
+ * Convert binary coded decimal to uint8_t
+ * @doc 4 bits for each decimal digit.
+ */
 uint8_t mjd_bcd_to_byte(uint8_t val);
+
 esp_err_t mjd_byte_to_binary_string(uint8_t input_byte, char * output_string);
 esp_err_t mjd_word_to_binary_string(uint16_t input_word, char * output_string);
 
@@ -176,6 +189,14 @@ uint32_t mjd_seconds_to_microseconds(uint32_t seconds);
 void mjd_log_time();
 void mjd_set_timezone_utc();
 void mjd_set_timezone_amsterdam();
+
+/*
+ * @brief
+ *
+ * @example char current_time[20];
+ *          mjd_get_current_time_yyyymmddhhmmss(current_time);
+ *
+ */
 void mjd_get_current_time_yyyymmddhhmmss(char *ptr_buffer);
 
 /**********
